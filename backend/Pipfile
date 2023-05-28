@@ -7,6 +7,9 @@ name = "pypi"
 django = "*"
 django-cors-headers = "*"
 djangorestframework = "*"
+channels = {extras = ["daphne"], version = "*"}
+channels-redis = "*"
+django-jazzmin = "*"
 
 [dev-packages]
 

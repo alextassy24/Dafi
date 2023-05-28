@@ -52,9 +52,10 @@
 				</v-form>
 			</v-card-text>
 		</v-card>
-		<div v-if="!isAuthenticated" class="mt-5">
+
+		<!-- <div v-if="!isAuthenticated" class="mt-5">
 			<h1 class="text-danger text-center">You must be logged in to access this page!</h1>
-		</div>
+		</div> -->
 	</v-container>
 </template>
 

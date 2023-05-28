@@ -22,70 +22,72 @@
 		</v-card>
 
 		<div class="flex">
-			<v-card class="m-2 w-100">
+			<v-card class="m-1 w-100">
 				<v-card-text>
-					<h5 class="card-title text-center">Coolant Temperature</h5>
-					<h5 class="card-title">Measured value: <span id="temperature"></span></h5>
-					<canvas id="myChart1"></canvas>
+					<h5 class="font-bold text-lg text-center mb-3">Coolant Temperature</h5>
+					<h5 class="font-bold text-base">
+						Measured value: <span id="temperature"></span>
+					</h5>
+					<canvas class="p-10" id="myChart1"></canvas>
 				</v-card-text>
 			</v-card>
 
-			<v-card class="m-2 w-100">
+			<v-card class="m-1 w-100">
 				<v-card-text>
-					<h5 class="card-title text-center">Coolant Pressure</h5>
-					<h5 class="card-title">Measured value: <span id="pressure"></span></h5>
-					<canvas id="myChart2"></canvas>
+					<h5 class="font-bold text-lg text-center mb-3">Coolant Pressure</h5>
+					<h5 class="font-bold text-base">Measured value: <span id="pressure"></span></h5>
+					<canvas class="p-10" id="myChart2"></canvas>
 				</v-card-text>
 			</v-card>
 		</div>
 
 		<div class="flex">
-			<v-card class="m-2 w-100">
+			<v-card class="m-1 w-100">
 				<v-card-text>
-					<div class="d-flex justify-between align-items-center mb-3">
-						<h5 class="card-title">Temperature Data Table</h5>
-						<a class="btn btn-primary" href="{% url 'download-temperature' %}">Save</a>
+					<div class="d-flex justify-between items-center mb-3">
+						<h5 class="font-bold">Temperature Data Table</h5>
+						<v-btn color="primary">Save</v-btn>
 					</div>
-					<div class="">
-						<v-table id="temp-table">
-							<thead>
-								<tr>
-									<th>ID</th>
-									<th>Timestamp</th>
-									<th>Value</th>
-								</tr>
-							</thead>
-							<tbody></tbody>
-						</v-table>
-					</div>
+					<v-data-table
+						:headers="tempHeaders"
+						:items="tempData"
+						:rows-per-page-items="[5, 10, 15]"
+						class="elevation-1"
+						:search="searchTemp"
+						:pagination.sync="tempPagination"
+					>
+						<template v-slot:item.id="{ item }">{{ item.id }}</template>
+						<template v-slot:item.timestamp="{ item }">{{ item.timestamp }}</template>
+						<template v-slot:item.value="{ item }">{{ item.value }}</template>
+					</v-data-table>
 				</v-card-text>
 			</v-card>
 
-			<v-card class="m-2 w-100">
+			<v-card class="m-1 w-100">
 				<v-card-text>
-					<div class="d-flex justify-between align-items-center mb-3">
-						<h5 class="">Pressure Data Table</h5>
-						<a class="" href="{% url 'download-pressure' %}">Save</a>
+					<div class="d-flex justify-between items-center mb-3">
+						<h5 class="font-bold">Pressure Data Table</h5>
+						<v-btn color="primary">Save</v-btn>
 					</div>
-					<div class="table-responsive">
-						<v-table id="press-table">
-							<thead>
-								<tr>
-									<th>ID</th>
-									<th>Timestamp</th>
-									<th>Value</th>
-								</tr>
-							</thead>
-							<tbody></tbody>
-						</v-table>
-					</div>
+					<v-data-table
+						:headers="pressHeaders"
+						:items="pressData"
+						:rows-per-page-items="[5, 10, 15]"
+						class="elevation-1"
+						:search="searchPress"
+						:pagination.sync="pressPagination"
+					>
+						<template v-slot:item.id="{ item }">{{ item.id }}</template>
+						<template v-slot:item.timestamp="{ item }">{{ item.timestamp }}</template>
+						<template v-slot:item.value="{ item }">{{ item.value }}</template>
+					</v-data-table>
 				</v-card-text>
 			</v-card>
 		</div>
 
-		<div v-if="!isAuthenticated" class="mt-5">
+		<!-- <div v-if="!isAuthenticated" class="mt-5">
 			<h1 class="text-danger text-center">You must be logged in to access this page!</h1>
-		</div>
+		</div> -->
 	</v-container>
 </template>
 
@@ -93,11 +95,28 @@
 export default {
 	data() {
 		return {
-			isAuthenticated: false,
+			tempHeaders: [
+				{ text: "ID", value: "id" },
+				{ text: "Timestamp", value: "timestamp" },
+				{ text: "Value", value: "value" },
+			],
+			tempData: [],
+			searchTemp: "",
+			tempPagination: {},
+
+			pressHeaders: [
+				{ text: "ID", value: "id" },
+				{ text: "Timestamp", value: "timestamp" },
+				{ text: "Value", value: "value" },
+			],
+			pressData: [],
+			searchPress: "",
+			pressPagination: {},
 		};
 	},
 	mounted() {
-		// Initialize your script here
+		// Fetch temperature data and assign to tempData array
+		// Fetch pressure data and assign to pressData array
 	},
 };
 </script>

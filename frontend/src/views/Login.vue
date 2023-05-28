@@ -1,15 +1,15 @@
 <template>
 	<h1 class="mt-10 mb-10 text-3xl text-center font-bold">Login</h1>
 
-	<v-form v-model="valid" class="max-w-md mx-auto">
+	<v-form @submit.prevent="submitForm" class="max-w-md mx-auto">
 		<v-container>
 			<v-row>
 				<v-col cols="12">
 					<v-text-field
-						v-model="email"
-						label="Email"
+						v-model="form.username"
+						label="Username"
 						outlined
-						type="email"
+						type="text"
 						required
 					></v-text-field>
 				</v-col>
@@ -18,7 +18,7 @@
 			<v-row>
 				<v-col cols="12">
 					<v-text-field
-						v-model="password"
+						v-model="form.password"
 						label="Password"
 						outlined
 						type="password"
@@ -38,7 +38,7 @@
 
 			<v-row justify="center">
 				<v-col cols="12" sm="6">
-					<v-btn class="bg-blue-400" block @click="submitForm"> Login </v-btn>
+					<v-btn class="w-100" color="success" block @click="submitForm"> Login </v-btn>
 				</v-col>
 			</v-row>
 		</v-container>
@@ -49,14 +49,41 @@
 export default {
 	data() {
 		return {
-			valid: false,
-			email: "",
-			password: "",
+			form: {
+				username: "",
+				password: "",
+			},
 		};
 	},
 	methods: {
-		submitForm() {
-			// Submit form logic
+		async submitForm() {
+			try {
+				const csrfToken = document
+					.querySelector('meta[name="csrf-token"]')
+					.getAttribute("content");
+
+				const formData = {
+					username: this.form.username,
+					password: this.form.password,
+				};
+
+				const response = await fetch("http://localhost:8000/api/login/", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"X-CSRFToken": csrfToken,
+					},
+					body: JSON.stringify(formData),
+				});
+
+				if (response.ok) {
+					console.log("User logged in successfully");
+				} else {
+					console.error("User login failed");
+				}
+			} catch (error) {
+				console.error("An error occurred during the API request:", error);
+			}
 		},
 	},
 };

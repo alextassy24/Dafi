@@ -1,7 +1,7 @@
 <template v-slot:append>
 	<v-app-bar>
 		<v-row class="flex justify-between bg-green-600">
-			<router-link to="/" class="m-5 font-bold font-xl"> Proiect DAFI </router-link>
+			<router-link to="/" class="m-5 font-bold text-xl"> Proiect DAFI </router-link>
 			<div>
 				<router-link to="/set-data">
 					<v-btn class="mt-5 font-bold"> Set data </v-btn>

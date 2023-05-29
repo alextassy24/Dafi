@@ -64,7 +64,7 @@
 			</v-row>
 			<v-row>
 				<v-col cols="12">
-					<v-btn type="submit" class="w-100" color="primary">Register</v-btn>
+					<v-btn type="submit" class="bg-gray-900 text-white w-100" block>Register</v-btn>
 				</v-col>
 			</v-row>
 		</v-container>

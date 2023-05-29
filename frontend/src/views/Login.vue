@@ -38,7 +38,7 @@
 
 			<v-row justify="center">
 				<v-col cols="12" sm="6">
-					<v-btn class="w-100" color="success" block @click="submitForm"> Login </v-btn>
+					<v-btn class="bg-gray-900 text-white" block @click="submitForm"> Login </v-btn>
 				</v-col>
 			</v-row>
 		</v-container>

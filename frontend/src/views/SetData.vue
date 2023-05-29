@@ -1,8 +1,8 @@
 <template>
-	<h1 class="mt-10 mb-10 text-3xl text-center font-bold">Set data</h1>
+	<h1 class="mt-10 mb-5 text-3xl text-center font-bold">Set data</h1>
 
 	<v-container class="mt-5">
-		<v-card class="mb-3">
+		<v-card class="mb-3 rounded-xl">
 			<v-card-text>
 				<h5 class="card-title mb-3">Coolant Temperature Settings</h5>
 				<v-form @submit.prevent="setTemperature">
@@ -48,7 +48,7 @@
 							required
 						></v-text-field>
 					</div>
-					<v-btn type="submit" color="success" block>Set</v-btn>
+					<v-btn type="submit" class="bg-gray-900 text-white rounded-xl" block>Set</v-btn>
 				</v-form>
 			</v-card-text>
 		</v-card>
@@ -72,17 +72,21 @@ export default {
 	},
 	methods: {
 		setTemperature() {
-			// Handle form submission and make an API request to set temperature values
-			console.log("Setting temperature values:", {
-				tempMinValue: this.tempMinValue,
-				tempMaxValue: this.tempMaxValue,
-			});
+			const socket = new WebSocket("ws://localhost:8000/ws/base/");
 
-			// Make an API request to set pressure values
-			console.log("Setting pressure values:", {
-				pressMinValue: this.pressMinValue,
-				pressMaxValue: this.pressMaxValue,
-			});
+			socket.onopen = () => {
+				const data = {
+					tempMinValue: this.tempMinValue,
+					tempMaxValue: this.tempMaxValue,
+					pressMinValue: this.pressMinValue,
+					pressMaxValue: this.pressMaxValue,
+				};
+
+				socket.send(JSON.stringify(data));
+
+				socket.close();
+				window.location.href = "/view-data/";
+			};
 		},
 	},
 };

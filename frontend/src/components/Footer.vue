@@ -1,5 +1,5 @@
 <template>
-	<v-footer class="flex flex-col bg-gray-200">
+	<div class="flex flex-col bg-gray-200">
 		<div class="bg-green-600 flex w-100 align-center px-4">
 			<strong>Social networks</strong>
 
@@ -21,7 +21,7 @@
 		<div class="px-4 py-2 bg-black text-center w-100">
 			{{ new Date().getFullYear() }} — <strong> &copy; Tanase Alexandru</strong>
 		</div>
-	</v-footer>
+	</div>
 </template>
 
 <script>

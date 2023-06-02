@@ -1,6 +1,4 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 import asyncio
 import json
 
@@ -8,11 +6,6 @@ tempMinValue = ''
 tempMaxValue = ''
 pressMinValue = ''
 pressMaxValue = ''
-print("First loading")
-print(f'tempMaxValue = {tempMaxValue}')
-print(f'tempMinValue = {tempMinValue}')
-print(f'pressMinValue = {pressMinValue}')
-print(f'pressMaxValue = {pressMaxValue}')
 
 class StateMachine():
     def __init__(self,tempMin,tempMax,pressMin,pressMax):

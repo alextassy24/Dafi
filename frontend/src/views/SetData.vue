@@ -72,10 +72,11 @@ export default {
 	},
 	methods: {
 		setTemperature() {
-			const socket = new WebSocket("ws://localhost:8000/ws/base/");
+			const socket = new WebSocket("ws://localhost:8000/ws/send/");
 
 			socket.onopen = () => {
 				const data = {
+					action: null,
 					tempMinValue: this.tempMinValue,
 					tempMaxValue: this.tempMaxValue,
 					pressMinValue: this.pressMinValue,

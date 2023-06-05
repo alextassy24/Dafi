@@ -68,7 +68,7 @@
 				<v-card-text>
 					<div class="d-flex justify-between items-center mb-3">
 						<h5 class="font-bold">Temperature Data Table</h5>
-						<v-btn class="bg-gray-900 text-white"
+						<v-btn class="bg-gray-900 text-white" @click="saveData('temperature')"
 							><i class="fa-regular fa-floppy-disk"></i>&nbsp; Save</v-btn
 						>
 					</div>
@@ -113,7 +113,18 @@
 						>
 							Previous
 						</button>
-						<div class="mr-2">Page {{ currentTempPage }} of {{ totalTempPages }}</div>
+						<div class="mr-2">
+							Page
+							<input
+								type="number"
+								v-model.number="tempGoToPage"
+								min="1"
+								max="totalTempPages"
+								class="w-12 text-center"
+								@input="goToTempPage"
+							/>
+							of {{ totalTempPages }}
+						</div>
 						<button
 							@click="nextTempPage"
 							:disabled="currentTempPage === totalTempPages"
@@ -129,7 +140,7 @@
 				<v-card-text>
 					<div class="d-flex justify-between items-center mb-3">
 						<h5 class="font-bold">Pressure Data Table</h5>
-						<v-btn class="bg-gray-900 text-white"
+						<v-btn class="bg-gray-900 text-white" @click="saveData('pressure')"
 							><i class="fa-regular fa-floppy-disk"></i>&nbsp; Save</v-btn
 						>
 					</div>
@@ -174,7 +185,18 @@
 						>
 							Previous
 						</button>
-						<div class="mr-2">Page {{ currentPressPage }} of {{ totalPressPages }}</div>
+						<div class="mr-2">
+							Page
+							<input
+								type="number"
+								v-model.number="pressGoToPage"
+								min="1"
+								max="totalPressPages"
+								class="w-12 text-center"
+								@input="goToPressPage"
+							/>
+							of {{ totalPressPages }}
+						</div>
 
 						<button
 							@click="nextPressPage"
@@ -220,6 +242,7 @@ export default {
 			tempData: [],
 			totalTempItems: 0,
 			totalTempPages: 0,
+			tempGoToPage: 1,
 
 			pressHeaders: [
 				{ text: "ID", value: "id", key: "id" },
@@ -227,7 +250,7 @@ export default {
 				{ text: "Value", value: "value", key: "value" },
 			],
 			pressData: [],
-
+			pressGoToPage: 1,
 			totalPressItems: 0,
 			totalPressPages: 0,
 
@@ -347,25 +370,71 @@ export default {
 		previousTempPage() {
 			if (this.currentTempPage > 1) {
 				this.currentTempPage--;
+				this.tempGoToPage = this.currentTempPage;
 			}
 		},
 		nextTempPage() {
 			if (this.currentTempPage < this.totalTempPages) {
 				this.currentTempPage++;
+				this.tempGoToPage = this.currentTempPage;
 			}
 		},
 		previousPressPage() {
 			if (this.currentPressPage > 1) {
 				this.currentPressPage--;
+				this.pressGoToPage = this.currentPressPage;
 			}
 		},
 		nextPressPage() {
 			if (this.currentPressPage < this.totalPressPages) {
 				this.currentPressPage++;
+				this.pressGoToPage = this.currentPressPage;
 			}
 		},
 		formatTimestamp(timestamp) {
 			return moment(timestamp).format("MMMM Do YYYY, h:mm:ss a");
+		},
+		saveData(type) {
+			let data = [];
+			let headers = [];
+			let filename = "";
+
+			if (type === "temperature") {
+				data = this.tempData;
+				headers = this.tempHeaders;
+				filename = "temperature_data.csv";
+			} else if (type === "pressure") {
+				data = this.pressData;
+				headers = this.pressHeaders;
+				filename = "pressure_data.csv";
+			}
+
+			let csvContent = "data:text/csv;charset=utf-8,";
+
+			let headerRow = headers.map((header) => header.value);
+			csvContent += headerRow.join(",") + "\r\n";
+
+			data.forEach((item) => {
+				let row = headers.map((header) => item[header.value]);
+				csvContent += row.join(",") + "\r\n";
+			});
+
+			let link = document.createElement("a");
+			link.setAttribute("href", encodeURI(csvContent));
+			link.setAttribute("download", filename);
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		},
+		goToTempPage() {
+			if (this.tempGoToPage >= 1 && this.tempGoToPage <= this.totalTempPages) {
+				this.currentTempPage = this.tempGoToPage;
+			}
+		},
+		goToPressPage() {
+			if (this.pressGoToPage >= 1 && this.pressGoToPage <= this.totalPressPages) {
+				this.currentPressPage = this.pressGoToPage;
+			}
 		},
 	},
 

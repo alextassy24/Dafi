@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'websocket',
     'corsheaders',
     'rest_framework',
-    'rest_framework_simplejwt',
+    'rest_framework.authtoken',
     'djoser',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -58,19 +58,25 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_COOKIE_DOMAIN = 'localhost'
+
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
 }
 
-SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES':('JWT',),
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-}
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8081',
+    'http://127.0.0.1:8081',
+    
 ]
 
 CSRF_COOKIE_SECURE = False

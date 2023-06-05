@@ -1,4 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
+from .models import Temperature, Pressure
 import asyncio
 import json
 
@@ -6,6 +8,10 @@ tempMinValue = ''
 tempMaxValue = ''
 pressMinValue = ''
 pressMaxValue = ''
+machine = None
+temperature = ''
+pressure = ''
+iteration = ''
 
 class StateMachine():
     def __init__(self,tempMin,tempMax,pressMin,pressMax):
@@ -14,15 +20,26 @@ class StateMachine():
         self.tempMax = tempMax
         self.pressMin = pressMin
         self.pressMax = pressMax
+        self.pressure = pressMin
+        self.temperature = tempMin
+        self.generating = True
 
     def idle(self):
         self.state = 'IDLE'
+        
+    def stop(self):
+        self.state = 'System stopped'
+        self.generating = False
     
     def cooling(self):
         self.state = 'COOLING'
+        self.generating = True
+        
     
     def heating(self):
         self.state = 'HEATING'
+        self.generating = True
+        
 
 class SendConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -34,48 +51,68 @@ class SendConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        print(f'data:', data)
         if data['action'] is None:
-            global tempMinValue, tempMaxValue, pressMinValue, pressMaxValue
+            global tempMinValue, tempMaxValue, pressMinValue, pressMaxValue, machine, temperature, pressure, iteration
             tempMinValue = data['tempMinValue']
             tempMaxValue = data['tempMaxValue']
             pressMinValue = data['pressMinValue']
             pressMaxValue = data['pressMaxValue']
+            
+            machine = StateMachine(tempMinValue, tempMaxValue, pressMinValue, pressMaxValue)
             
         else:
             self.action = data['action']
             await self.send_data(self.action)
             
     async def send_data(self, action):
+        print(self.action)
         if action == 'start':
-            await asyncio.sleep(3)
-            await self.send(json.dumps({'status': 'IDLE',
-                                    'tempMinValue': tempMinValue,
-                                    'tempMaxValue': tempMaxValue,
-                                    'pressMinValue':pressMinValue,
-                                    'pressMaxValue':pressMaxValue,}))
+            asyncio.sleep(2)
+            machine.idle()
+            for i in range(tempMaxValue + 1 - tempMinValue):
+                if not machine.generating:
+                    break
+                machine.temperature = tempMinValue + i
+                machine.pressure = pressMinValue + i
+                await self.send_values(machine)
+                await self.save_temperature(machine.temperature)
+                await self.save_pressure(machine.pressure)
+                
             
         elif action == 'stop':
-            await asyncio.sleep(3)
-            await self.send(json.dumps({'status': 'System stopped',
-                                    'tempMinValue': tempMinValue,
-                                    'tempMaxValue': tempMaxValue,
-                                    'pressMinValue': pressMinValue,
-                                    'pressMaxValue': pressMaxValue,}))
+            machine.stop()
+            machine.generating = False
             
         elif action == 'cooling':
-            await asyncio.sleep(3)
-            await self.send(json.dumps({'status': 'COOLING',
-                                    'tempMinValue': tempMinValue,
-                                    'tempMaxValue': tempMaxValue,
-                                    'pressMinValue': pressMinValue,
-                                    'pressMaxValue': pressMaxValue,}))
+            machine.cooling()
+            # for i in range(iteration,  tempMinValue):
+            #     machine.temperature = tempMinValue + i
+            #     machine.pressure = pressMinValue + i
+            #     await self.send_values(machine)
+            #     await self.save_temperature(machine.temperature)
+            #     await self.save_pressure(machine.pressure)
+            # iteration = i
             
         elif action == 'heating':
-            await asyncio.sleep(3)
-            await self.send(json.dumps({'status': 'HEATING',
-                                    'tempMinValue': tempMinValue,
-                                    'tempMaxValue': tempMaxValue,
-                                    'pressMinValue': pressMinValue,
-                                    'pressMaxValue': pressMaxValue,})) 
-        
+            machine.heating()
+
+    async def send_values(self,machine):
+        await self.send(json.dumps({
+            'status': machine.state,
+            'tempMinValue': tempMinValue,
+            'tempMaxValue': tempMaxValue,
+            'pressMinValue': pressMinValue,
+            'pressMaxValue': pressMaxValue,
+            'pressure': machine.pressure,
+            'temperature': machine.temperature,
+        }))
+
+    @database_sync_to_async
+    def save_temperature(self, value):
+        temperature = Temperature(value=value)
+        temperature.save()
+
+    @database_sync_to_async
+    def save_pressure(self, value):
+        pressure = Pressure(value=value)
+        pressure.save()

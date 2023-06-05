@@ -40,7 +40,7 @@
 						Max value: <span id="tempMaxVal">{{ tempMaxValue }}</span>
 					</h5>
 					<h5 class="font-bold text-base">
-						Measured value: <span id="temperature"></span>
+						Measured value: <span id="temperature">{{ temperature }}</span>
 					</h5>
 					<canvas class="p-10" id="myChart1"></canvas>
 				</v-card-text>
@@ -55,7 +55,9 @@
 					<h5 class="font-bold text-base">
 						Max value: <span id="pressMaxVal">{{ pressMaxValue }}</span>
 					</h5>
-					<h5 class="font-bold text-base">Measured value: <span id="pressure"></span></h5>
+					<h5 class="font-bold text-base">
+						Measured value: <span id="pressure">{{ pressure }}</span>
+					</h5>
 					<canvas class="p-10" id="myChart2"></canvas>
 				</v-card-text>
 			</v-card>
@@ -70,19 +72,57 @@
 							><i class="fa-regular fa-floppy-disk"></i>&nbsp; Save</v-btn
 						>
 					</div>
-					<v-data-table
-						:headers="tempHeaders"
-						:items="tempData"
-						:rows-per-page-items="[5, 10, 15]"
-						class="elevation-1"
-						:search="searchTemp"
-						:pagination.sync="tempPagination"
-					>
-						<template v-slot:item.id="{ item }">{{ item.id }}</template>
-						<template v-slot:item.timestamp="{ item }">{{ item.timestamp }}</template>
-						<template v-slot:item.value="{ item }">{{ item.value }}</template>
-					</v-data-table>
 				</v-card-text>
+
+				<div class="overflow-x-auto m-5">
+					<table class="min-w-full divide-y divide-gray-200">
+						<thead>
+							<tr>
+								<th
+									class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+								>
+									ID
+								</th>
+								<th
+									class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+								>
+									Timestamp
+								</th>
+								<th
+									class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+								>
+									Value
+								</th>
+							</tr>
+						</thead>
+						<tbody class="bg-white divide-y divide-gray-200">
+							<tr v-for="item in paginatedTempItems" :key="item.id">
+								<td class="px-6 py-4 whitespace-nowrap">{{ item.id }}</td>
+								<td class="px-6 py-4 whitespace-nowrap">
+									{{ formatTimestamp(item.timestamp) }}
+								</td>
+								<td class="px-6 py-4 whitespace-nowrap">{{ item.value }}</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="flex justify-between mt-4">
+						<button
+							@click="previousTempPage"
+							:disabled="currentTempPage === 1"
+							class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+						>
+							Previous
+						</button>
+						<div class="mr-2">Page {{ currentTempPage }} of {{ totalTempPages }}</div>
+						<button
+							@click="nextTempPage"
+							:disabled="currentTempPage === totalTempPages"
+							class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+						>
+							Next
+						</button>
+					</div>
+				</div>
 			</v-card>
 
 			<v-card class="m-1 w-100 rounded-lg">
@@ -93,35 +133,108 @@
 							><i class="fa-regular fa-floppy-disk"></i>&nbsp; Save</v-btn
 						>
 					</div>
-					<v-data-table
-						:headers="pressHeaders"
-						:items="pressData"
-						:rows-per-page-items="[5, 10, 15]"
-						class="elevation-1"
-						:search="searchPress"
-						:pagination.sync="pressPagination"
-					>
-						<template v-slot:item.id="{ item }">{{ item.id }}</template>
-						<template v-slot:item.timestamp="{ item }">{{ item.timestamp }}</template>
-						<template v-slot:item.value="{ item }">{{ item.value }}</template>
-					</v-data-table>
 				</v-card-text>
+
+				<div class="overflow-x-auto m-5">
+					<table class="min-w-full divide-y divide-gray-200">
+						<thead>
+							<tr>
+								<th
+									class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+								>
+									ID
+								</th>
+								<th
+									class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+								>
+									Timestamp
+								</th>
+								<th
+									class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+								>
+									Value
+								</th>
+							</tr>
+						</thead>
+						<tbody class="bg-white divide-y divide-gray-200">
+							<tr v-for="item in paginatedPressItems" :key="item.id">
+								<td class="px-6 py-4 whitespace-nowrap">{{ item.id }}</td>
+								<td class="px-6 py-4 whitespace-nowrap">
+									{{ formatTimestamp(item.timestamp) }}
+								</td>
+								<td class="px-6 py-4 whitespace-nowrap">{{ item.value }}</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="flex justify-between mt-4">
+						<button
+							@click="previousPressPage"
+							:disabled="currentPressPage === 1"
+							class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+						>
+							Previous
+						</button>
+						<div class="mr-2">Page {{ currentPressPage }} of {{ totalPressPages }}</div>
+
+						<button
+							@click="nextPressPage"
+							:disabled="currentPressPage === totalPressPages"
+							class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+						>
+							Next
+						</button>
+					</div>
+				</div>
 			</v-card>
 		</div>
-
-		<!-- <div v-if="!isAuthenticated" class="mt-5">
-			<h1 class="text-danger text-center">You must be logged in to access this page!</h1>
-		</div> -->
 	</v-container>
 </template>
 
+<style>
+table {
+	table-layout: fixed;
+}
+
+button[disabled] {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+</style>
+
 <script>
+import axios from "axios";
+import moment from "moment";
+
 export default {
 	data() {
 		return {
+			currentTempPage: 1,
+			currentPressPage: 1,
+			itemsPerPage: 10,
+
+			tempHeaders: [
+				{ text: "ID", value: "id", key: "id" },
+				{ text: "Timestamp", value: "timestamp", key: "timestamp" },
+				{ text: "Value", value: "value", key: "value" },
+			],
+			tempData: [],
+			totalTempItems: 0,
+			totalTempPages: 0,
+
+			pressHeaders: [
+				{ text: "ID", value: "id", key: "id" },
+				{ text: "Timestamp", value: "timestamp", key: "timestamp" },
+				{ text: "Value", value: "value", key: "value" },
+			],
+			pressData: [],
+
+			totalPressItems: 0,
+			totalPressPages: 0,
+
 			systemStatus: "Initializing",
 			temperature: "",
 			pressure: "",
+
 			tempMinValue: "",
 			tempMaxValue: "",
 			pressMinValue: "",
@@ -159,7 +272,124 @@ export default {
 			socket: null,
 		};
 	},
+
+	computed: {
+		paginatedTempItems() {
+			const startIndex = (this.currentTempPage - 1) * this.itemsPerPage;
+			const endIndex = startIndex + this.itemsPerPage;
+			return this.tempData.slice(startIndex, endIndex);
+		},
+		paginatedPressItems() {
+			const startIndex = (this.currentPressPage - 1) * this.itemsPerPage;
+			const endIndex = startIndex + this.itemsPerPage;
+			return this.pressData.slice(startIndex, endIndex);
+		},
+	},
+
+	methods: {
+		sendAction(action) {
+			this.socket.send(JSON.stringify({ action }));
+		},
+		handleMessage(event) {
+			const djangoData = JSON.parse(event.data);
+
+			const newTempGraphData = this.tempGraphData.data.datasets[0].data;
+			const newTempGraphLabels = this.tempGraphData.data.labels;
+			// newTempGraphData.push(djangoData.value_temp);
+			// newTempGraphLabels.push(djangoData.i);
+			// this.tempGraphData.data.datasets[0].data = newTempGraphData;
+			// this.tempGraphData.data.labels = newTempGraphLabels;
+			// this.myTempChart.update();
+
+			const newPresGraphData = this.presGraphData.data.datasets[0].data;
+			const newPresGraphLabels = this.presGraphData.data.labels;
+			// newPresGraphData.push(djangoData.value_press);
+			// newPresGraphLabels.push(djangoData.i);
+			// this.presGraphData.data.datasets[0].data = newPresGraphData;
+			// this.presGraphData.data.labels = newPresGraphLabels;
+			// this.myPresChart.update();
+
+			this.systemStatus = djangoData.status;
+			this.tempMinValue = djangoData.tempMinValue;
+			this.tempMaxValue = djangoData.tempMaxValue;
+			this.pressMinValue = djangoData.pressMinValue;
+			this.pressMaxValue = djangoData.pressMaxValue;
+			this.temperature = djangoData.temperature;
+			this.pressure = djangoData.pressure;
+		},
+		fetchPressureData() {
+			axios
+				.get("http://127.0.0.1:8000/api/data/pressure-data/")
+				.then((response) => {
+					console.log("Response data:", response.data);
+					this.pressData = response.data;
+					this.pressureTotalItems = response.data.length;
+					this.pressureLoading = false;
+				})
+				.catch((error) => {
+					console.error("Error fetching pressure data:", error);
+				});
+		},
+
+		fetchTemperatureData() {
+			axios
+				.get("http://127.0.0.1:8000/api/data/temperature-data/")
+				.then((response) => {
+					console.log("Response data:", response.data);
+					this.tempData = response.data;
+					this.temperatureTotalItems = response.data.length;
+					this.temperatureLoading = false;
+				})
+				.catch((error) => {
+					console.error("Error fetching temperature data:", error);
+				});
+		},
+		previousTempPage() {
+			if (this.currentTempPage > 1) {
+				this.currentTempPage--;
+			}
+		},
+		nextTempPage() {
+			if (this.currentTempPage < this.totalTempPages) {
+				this.currentTempPage++;
+			}
+		},
+		previousPressPage() {
+			if (this.currentPressPage > 1) {
+				this.currentPressPage--;
+			}
+		},
+		nextPressPage() {
+			if (this.currentPressPage < this.totalPressPages) {
+				this.currentPressPage++;
+			}
+		},
+		formatTimestamp(timestamp) {
+			return moment(timestamp).format("MMMM Do YYYY, h:mm:ss a");
+		},
+	},
+
 	mounted() {
+		axios
+			.get("http://127.0.0.1:8000/api/data/pressure-data/")
+			.then((response) => {
+				this.pressData = response.data;
+				this.totalPressPages = Math.ceil(response.data.length / this.itemsPerPage);
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+
+		axios
+			.get("http://127.0.0.1:8000/api/data/temperature-data/")
+			.then((response) => {
+				this.tempData = response.data;
+				this.totalTempPages = Math.ceil(response.data.length / this.itemsPerPage);
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+
 		const ctx = document.getElementById("myChart1").getContext("2d");
 		const ctx2 = document.getElementById("myChart2").getContext("2d");
 
@@ -195,36 +425,6 @@ export default {
 	},
 	beforeUnmount() {
 		this.socket.close();
-	},
-	methods: {
-		sendAction(action) {
-			this.socket.send(JSON.stringify({ action }));
-		},
-		handleMessage(event) {
-			const djangoData = JSON.parse(event.data);
-
-			// const newTempGraphData = this.tempGraphData.data.datasets[0].data;
-			// const newTempGraphLabels = this.tempGraphData.data.labels;
-			// newTempGraphData.push(djangoData.value_temp);
-			// newTempGraphLabels.push(djangoData.i);
-			// this.tempGraphData.data.datasets[0].data = newTempGraphData;
-			// this.tempGraphData.data.labels = newTempGraphLabels;
-			// this.myTempChart.update();
-
-			// const newPresGraphData = this.presGraphData.data.datasets[0].data;
-			// const newPresGraphLabels = this.presGraphData.data.labels;
-			// newPresGraphData.push(djangoData.value_press);
-			// newPresGraphLabels.push(djangoData.i);
-			// this.presGraphData.data.datasets[0].data = newPresGraphData;
-			// this.presGraphData.data.labels = newPresGraphLabels;
-			// this.myPresChart.update();
-
-			this.systemStatus = djangoData.status;
-			this.tempMinValue = djangoData.tempMinValue;
-			this.tempMaxValue = djangoData.tempMaxValue;
-			this.pressMinValue = djangoData.pressMinValue;
-			this.pressMaxValue = djangoData.pressMaxValue;
-		},
 	},
 };
 </script>

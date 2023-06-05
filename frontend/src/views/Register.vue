@@ -1,22 +1,24 @@
 <template>
 	<h1 class="mt-10 mb-10 text-3xl text-center font-bold">Register</h1>
 
-	<v-form @submit.prevent="registerUser" class="w-50 mx-auto">
+	<v-form v-model="valid" @submit.prevent="registerUser" class="w-50 mx-auto">
 		<v-container>
 			<v-row>
 				<v-col cols="12" sm="6">
 					<v-text-field
-						v-model="form.first_name"
+						v-model="first_name"
 						label="First Name"
 						name="first_name"
+						:rules="nameRules"
 						required
 					></v-text-field>
 				</v-col>
 				<v-col cols="12" sm="6">
 					<v-text-field
-						v-model="form.last_name"
+						v-model="last_name"
 						label="Last Name"
 						name="last_name"
+						:rules="nameRules"
 						required
 					></v-text-field>
 				</v-col>
@@ -24,10 +26,11 @@
 			<v-row>
 				<v-col cols="12">
 					<v-text-field
-						v-model="form.username"
+						v-model="username"
 						label="Username"
 						type="text"
 						name="username"
+						:rules="usernameRules"
 						required
 					></v-text-field>
 				</v-col>
@@ -35,10 +38,11 @@
 			<v-row>
 				<v-col cols="12">
 					<v-text-field
-						v-model="form.email"
+						v-model="email"
 						label="Email"
 						type="email"
 						name="email"
+						:rules="emailRules"
 						required
 					></v-text-field>
 				</v-col>
@@ -46,10 +50,11 @@
 			<v-row>
 				<v-col cols="12">
 					<v-text-field
-						v-model="form.password"
+						v-model="password"
 						label="Password"
 						type="password"
 						name="password"
+						:rules="passwordRules"
 						required
 					></v-text-field>
 				</v-col>
@@ -72,51 +77,91 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
 	data() {
 		return {
-			form: {
-				username: "",
-				first_name: "",
-				last_name: "",
-				email: "",
-				password: "",
-			},
+			username: "",
+			first_name: "",
+			last_name: "",
+			email: "",
+			password: "",
+			valid: false,
+			nameRules: [
+				(value) => {
+					if (value) return true;
+
+					return "Name is requred.";
+				},
+				(value) => {
+					if (value?.length <= 15) return true;
+
+					return "Name must be less than 15 characters.";
+				},
+			],
+
+			usernameRules: [
+				(value) => {
+					if (value) return true;
+
+					return "Userame is requred.";
+				},
+				(value) => {
+					if (value?.length <= 15) return true;
+
+					return "Username must be less than 15 characters.";
+				},
+			],
+			emailRules: [
+				(value) => {
+					if (value) return true;
+
+					return "E-mail is requred.";
+				},
+				(value) => {
+					if (/.+@.+\..+/.test(value)) return true;
+
+					return "E-mail must be valid.";
+				},
+			],
+			passwordRules: [
+				(value) => {
+					if (value) return true;
+
+					return "Password is requred.";
+				},
+				(value) => {
+					if (value?.length <= 10) return true;
+
+					return "Password must be less than 10 characters.";
+				},
+
+				(value) => {
+					if (value?.length > 5) return true;
+
+					return "Password must be contain more than 5 characters.";
+				},
+			],
 		};
 	},
 	methods: {
-		async registerUser() {
-			try {
-				const csrfToken = document
-					.querySelector('meta[name="csrf-token"]')
-					.getAttribute("content");
-
-				const formData = {
-					username: this.form.username,
-					first_name: this.form.first_name,
-					last_name: this.form.last_name,
-					email: this.form.email,
-					password: this.form.password,
-				};
-
-				console.log(formData);
-				const response = await fetch("http://localhost:8000/api/register/", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						"X-CSRFToken": csrfToken,
-					},
-					body: JSON.stringify(formData),
+		registerUser(e) {
+			const formData = {
+				username: this.username,
+				password: this.password,
+				email: this.email,
+				first_name: this.first_name,
+				last_name: this.last_name,
+			};
+			axios
+				.post("/api/v1/users/", formData)
+				.then((respone) => {
+					this.$router.push("/login");
+					console.log(response);
+				})
+				.catch((error) => {
+					console.log(error);
 				});
-
-				if (response.ok) {
-					console.log("User registered successfully");
-				} else {
-					console.error("User registration failed");
-				}
-			} catch (error) {
-				console.error("An error occurred during the API request:", error);
-			}
 		},
 	},
 };

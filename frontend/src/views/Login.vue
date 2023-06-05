@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
 	data() {
 		return {
@@ -56,34 +58,24 @@ export default {
 		};
 	},
 	methods: {
-		async submitForm() {
-			try {
-				const csrfToken = document
-					.querySelector('meta[name="csrf-token"]')
-					.getAttribute("content");
+		async submitForm(e) {
+			const formData = {
+				username: this.form.username,
+				password: this.form.password,
+			};
+			axios
+				.post("/api/v1/token/login/", formData)
+				.then((respone) => {
+					console.log(response);
 
-				const formData = {
-					username: this.form.username,
-					password: this.form.password,
-				};
-
-				const response = await fetch("http://localhost:8000/api/login/", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						"X-CSRFToken": csrfToken,
-					},
-					body: JSON.stringify(formData),
+					const token = response.data.auth_token;
+					this.$store.commit("setToken", token);
+					axios.defaults.headers.common["Authorization"] = "Token " + token;
+					localStorage.setItem("token", token);
+				})
+				.catch((error) => {
+					console.log(error);
 				});
-
-				if (response.ok) {
-					console.log("User logged in successfully");
-				} else {
-					console.error("User login failed");
-				}
-			} catch (error) {
-				console.error("An error occurred during the API request:", error);
-			}
 		},
 	},
 };

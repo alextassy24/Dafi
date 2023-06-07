@@ -11,7 +11,7 @@
 					<v-btn class="mt-5 mr-5 bg-white font-bold"> Login </v-btn>
 				</router-link>
 
-				<router-link v-else="" to="/logout">
+				<router-link v-else="" to="/">
 					<v-btn class="mt-5 mr-5 text-white bg-red-600 font-bold" @click="logout">
 						Logout
 					</v-btn>

@@ -96,7 +96,11 @@
 								</tr>
 							</thead>
 							<tbody class="bg-white divide-y divide-gray-200">
-								<tr v-for="item in paginatedTempItems" :key="item.id">
+								<tr
+									v-for="item in paginatedTempItems"
+									:key="item.id"
+									class="hover:bg-gray-100"
+								>
 									<td class="px-6 py-4 whitespace-nowrap">{{ item.id }}</td>
 									<td class="px-6 py-4 whitespace-nowrap">
 										{{ formatTimestamp(item.timestamp) }}
@@ -168,7 +172,11 @@
 								</tr>
 							</thead>
 							<tbody class="bg-white divide-y divide-gray-200">
-								<tr v-for="item in paginatedPressItems" :key="item.id">
+								<tr
+									v-for="item in paginatedPressItems"
+									:key="item.id"
+									class="hover:bg-gray-100"
+								>
 									<td class="px-6 py-4 whitespace-nowrap">{{ item.id }}</td>
 									<td class="px-6 py-4 whitespace-nowrap">
 										{{ formatTimestamp(item.timestamp) }}

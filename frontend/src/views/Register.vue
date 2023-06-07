@@ -4,26 +4,6 @@
 		<v-form v-model="valid" @submit.prevent="registerUser" class="w-50 mx-auto">
 			<v-container>
 				<v-row>
-					<v-col cols="12" sm="6">
-						<v-text-field
-							v-model="first_name"
-							label="First Name"
-							name="first_name"
-							:rules="nameRules"
-							required
-						></v-text-field>
-					</v-col>
-					<v-col cols="12" sm="6">
-						<v-text-field
-							v-model="last_name"
-							label="Last Name"
-							name="last_name"
-							:rules="nameRules"
-							required
-						></v-text-field>
-					</v-col>
-				</v-row>
-				<v-row>
 					<v-col cols="12">
 						<v-text-field
 							v-model="username"
@@ -38,11 +18,11 @@
 				<v-row>
 					<v-col cols="12">
 						<v-text-field
-							v-model="email"
-							label="Email"
-							type="email"
-							name="email"
-							:rules="emailRules"
+							v-model="password"
+							label="Password"
+							type="password"
+							name="password"
+							:rules="passwordRules"
 							required
 						></v-text-field>
 					</v-col>
@@ -50,11 +30,11 @@
 				<v-row>
 					<v-col cols="12">
 						<v-text-field
-							v-model="password"
-							label="Password"
+							v-model="passwordConfirmation"
+							label="Confirm Password"
 							type="password"
-							name="password"
-							:rules="passwordRules"
+							name="passwordConfirmation"
+							:rules="passwordConfirmationRules"
 							required
 						></v-text-field>
 					</v-col>
@@ -91,23 +71,9 @@ export default {
 	data() {
 		return {
 			username: "",
-			first_name: "",
-			last_name: "",
-			email: "",
 			password: "",
+			passwordConfirmation: "",
 			valid: false,
-			nameRules: [
-				(value) => {
-					if (value) return true;
-
-					return "Name is requred.";
-				},
-				(value) => {
-					if (value?.length <= 15) return true;
-
-					return "Name must be less than 15 characters.";
-				},
-			],
 
 			usernameRules: [
 				(value) => {
@@ -119,18 +85,6 @@ export default {
 					if (value?.length <= 15) return true;
 
 					return "Username must be less than 15 characters.";
-				},
-			],
-			emailRules: [
-				(value) => {
-					if (value) return true;
-
-					return "E-mail is requred.";
-				},
-				(value) => {
-					if (/.+@.+\..+/.test(value)) return true;
-
-					return "E-mail must be valid.";
 				},
 			],
 			passwordRules: [
@@ -146,9 +100,21 @@ export default {
 				},
 
 				(value) => {
-					if (value?.length > 5) return true;
+					if (value?.length > 8) return true;
 
-					return "Password must be contain more than 5 characters.";
+					return "Password must be contain more than 8 characters.";
+				},
+			],
+			passwordConfirmationRules: [
+				(value) => {
+					if (value) return true;
+
+					return "Confirm Password is requred.";
+				},
+				(value) => {
+					if (value === this.password) return true;
+
+					return "Passwords do not match.";
 				},
 			],
 		};
@@ -164,7 +130,7 @@ export default {
 			};
 			axios
 				.post("/api/v1/users/", formData)
-				.then((respone) => {
+				.then((response) => {
 					this.$router.push("/login");
 					console.log(response);
 				})

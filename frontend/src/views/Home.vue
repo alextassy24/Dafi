@@ -1,5 +1,8 @@
 <template>
-	<h1 class="mt-10 mb-10 text-3xl text-center font-bold">Welcome</h1>
+	<h1 class="mt-10 mb-10 text-3xl text-center font-bold" v-if="isAuthenticated">
+		Welcome, {{ welcomeMessage }}
+	</h1>
+	<h1 class="mt-10 mb-10 text-3xl text-center font-bold" v-else>Welcome, Guest</h1>
 	<div class="text-base text-justify my-10 mx-10 p-7 bg-gray-300 rounded-xl">
 		<p>
 			&emsp;This is a web application that allows users to register and login to their
@@ -27,10 +30,31 @@
 
 <script>
 import { defineComponent } from "vue";
+import { mapState } from "vuex";
 
 export default defineComponent({
 	name: "Home",
 
-	components: {},
+	computed: {
+		...mapState(["isAuthenticated", "user"]),
+		welcomeMessage() {
+			console.log("isAuthenticated:", this.isAuthenticated);
+			console.log("user:", this.user);
+
+			if (this.isAuthenticated && this.user) {
+				if (this.user.first_name && this.user.last_name) {
+					return `${this.user.first_name} ${this.user.last_name}`;
+				} else if (this.user.username) {
+					return this.user.username;
+				} else {
+					console.log("No appropriate field found, using fallback");
+					return "User";
+				}
+			} else {
+				console.log("Not authenticated, using Guest");
+				return "Guest";
+			}
+		},
+	},
 });
 </script>

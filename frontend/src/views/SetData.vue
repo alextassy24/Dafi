@@ -1,62 +1,64 @@
 <template>
-	<h1 class="mt-10 mb-5 text-3xl text-center font-bold">Set data</h1>
-
-	<v-container class="mt-5">
-		<v-card class="mb-3 rounded-xl">
-			<v-card-text>
-				<h5 class="card-title mb-3">Coolant Temperature Settings</h5>
-				<v-form @submit.prevent="setTemperature">
-					<div class="mb-3">
-						<v-text-field
-							v-model="tempMinValue"
-							label="Minimum Value"
-							type="number"
-							placeholder="ex: 200"
-							outlined
-							required
-						></v-text-field>
-					</div>
-					<div class="mb-3">
-						<v-text-field
-							v-model="tempMaxValue"
-							label="Maximum Value"
-							type="number"
-							placeholder="ex: 350"
-							outlined
-							required
-						></v-text-field>
-					</div>
-					<hr class="mb-3" />
-					<h5 class="card-title mb-3">Coolant Pressure Settings</h5>
-					<div class="mb-3">
-						<v-text-field
-							v-model="pressMinValue"
-							label="Minimum Value"
-							type="number"
-							placeholder="ex: 70"
-							outlined
-							required
-						></v-text-field>
-					</div>
-					<div class="mb-3">
-						<v-text-field
-							v-model="pressMaxValue"
-							label="Maximum Value"
-							type="number"
-							placeholder="ex: 230"
-							outlined
-							required
-						></v-text-field>
-					</div>
-					<v-btn type="submit" class="bg-gray-900 text-white rounded-xl" block>Set</v-btn>
-				</v-form>
-			</v-card-text>
-		</v-card>
-
-		<!-- <div v-if="!isAuthenticated" class="mt-5">
-			<h1 class="text-danger text-center">You must be logged in to access this page!</h1>
-		</div> -->
-	</v-container>
+	<div v-if="$store.state.isAuthenticated">
+		<h1 class="mt-10 mb-5 text-3xl text-center font-bold">Set data</h1>
+		<v-container class="mt-5">
+			<v-card class="mb-3 rounded-xl">
+				<v-card-text>
+					<h5 class="card-title mb-3">Coolant Temperature Settings</h5>
+					<v-form @submit.prevent="setTemperature">
+						<div class="mb-3">
+							<v-text-field
+								v-model="tempMinValue"
+								label="Minimum Value"
+								type="number"
+								placeholder="ex: 200"
+								outlined
+								required
+							></v-text-field>
+						</div>
+						<div class="mb-3">
+							<v-text-field
+								v-model="tempMaxValue"
+								label="Maximum Value"
+								type="number"
+								placeholder="ex: 350"
+								outlined
+								required
+							></v-text-field>
+						</div>
+						<hr class="mb-3" />
+						<h5 class="card-title mb-3">Coolant Pressure Settings</h5>
+						<div class="mb-3">
+							<v-text-field
+								v-model="pressMinValue"
+								label="Minimum Value"
+								type="number"
+								placeholder="ex: 70"
+								outlined
+								required
+							></v-text-field>
+						</div>
+						<div class="mb-3">
+							<v-text-field
+								v-model="pressMaxValue"
+								label="Maximum Value"
+								type="number"
+								placeholder="ex: 230"
+								outlined
+								required
+							></v-text-field>
+						</div>
+						<v-btn type="submit" class="bg-gray-900 text-white rounded-xl" block
+							>Set</v-btn
+						>
+					</v-form>
+				</v-card-text>
+			</v-card>
+		</v-container>
+	</div>
+	<div v-else="">
+		<h1 class="mt-10 font-bold text-3xl text-center text-red-500">You are not logged in!</h1>
+	</div>
 </template>
 
 <script>

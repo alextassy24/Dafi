@@ -36,7 +36,7 @@
 					title="temperature"
 					:min-value="tempMinValue"
 					:max-value="tempMaxValue"
-					:measured-value="temperature"
+					:value="temperature"
 					:graph-data="tempGraphData"
 					color="rgba(73,198,230,1)"
 				/>
@@ -46,7 +46,7 @@
 					title="pressure"
 					:min-value="pressMinValue"
 					:max-value="pressMaxValue"
-					:measured-value="pressure"
+					:value="pressure"
 					:graph-data="presGraphData"
 					color="rgba(0,0,0,1)"
 				/>
@@ -86,6 +86,17 @@ export default {
 	data() {
 		return {
 			systemStatus: "Initializing",
+			temperature: "",
+			pressure: "",
+			pressMaxValue: "",
+			pressMinValue: "",
+			tempMaxValue: "",
+			tempMinValue: "",
+
+			newTempGraphData: "",
+			newTempGraphLabels: "",
+			newPresGraphData: "",
+			newPresGraphLabels: "",
 
 			myTempChart: "",
 			myPresChart: "",
@@ -124,13 +135,21 @@ export default {
 	},
 	mounted() {
 		this.socket = new WebSocket("ws://localhost:8000/ws/send/");
+
 		this.socket.addEventListener("open", () => {
 			console.log("WebSocket connection established.");
 		});
+
 		this.socket.addEventListener("close", () => {
 			console.log("WebSocket connection closed.");
 		});
+
 		this.socket.addEventListener("message", this.handleMessage);
+
+		this.newTempGraphData = this.tempGraphData.data.datasets[0].data;
+		this.newTempGraphLabels = this.tempGraphData.data.labels;
+		this.newPresGraphData = this.presGraphData.data.datasets[0].data;
+		this.newPresGraphLabels = this.presGraphData.data.labels;
 
 		const coolingButton = document.getElementById("coolingBtn");
 		const heatingButton = document.getElementById("heatingBtn");
@@ -157,21 +176,17 @@ export default {
 		handleMessage(event) {
 			const djangoData = JSON.parse(event.data);
 
-			const newTempGraphData = this.tempGraphData.data.datasets[0].data;
-			const newTempGraphLabels = this.tempGraphData.data.labels;
-			newTempGraphData.push(djangoData.value_temp);
-			newTempGraphLabels.push(djangoData.i);
-			this.tempGraphData.data.datasets[0].data = newTempGraphData;
-			this.tempGraphData.data.labels = newTempGraphLabels;
-			this.myTempChart.update();
+			// this.newTempGraphData.push(djangoData.temperature);
+			// this.newTempGraphLabels.push(djangoData.i);
+			// this.tempGraphData.data.datasets[0].data = this.newTempGraphData;
+			// this.tempGraphData.data.labels = this.newTempGraphLabels;
+			// this.myTempChart.update();
 
-			const newPresGraphData = this.presGraphData.data.datasets[0].data;
-			const newPresGraphLabels = this.presGraphData.data.labels;
-			newPresGraphData.push(djangoData.value_press);
-			newPresGraphLabels.push(djangoData.i);
-			this.presGraphData.data.datasets[0].data = newPresGraphData;
-			this.presGraphData.data.labels = newPresGraphLabels;
-			this.myPresChart.update();
+			// this.newPresGraphData.push(djangoData.pressure);
+			// this.newPresGraphLabels.push(djangoData.i);
+			// this.presGraphData.data.datasets[0].data = this.newPresGraphData;
+			// this.presGraphData.data.labels = this.newPresGraphLabels;
+			// this.myPresChart.update();
 
 			this.systemStatus = djangoData.status;
 			this.tempMinValue = djangoData.tempMinValue;

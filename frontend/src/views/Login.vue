@@ -1,15 +1,16 @@
 <template>
 	<div v-if="!$store.state.isAuthenticated">
 		<h1 class="mt-10 mb-10 text-3xl text-center font-bold">Login</h1>
-		<v-form @submit.prevent="submitForm" class="max-w-md mx-auto">
+		<v-form v-model="valid" @submit.prevent="submitForm" class="max-w-md mx-auto">
 			<v-container>
 				<v-row>
 					<v-col cols="12">
 						<v-text-field
-							v-model="form.username"
+							v-model="username"
 							label="Username"
 							outlined
 							type="text"
+							:rules="usernameRules"
 							required
 						></v-text-field>
 					</v-col>
@@ -18,10 +19,11 @@
 				<v-row>
 					<v-col cols="12">
 						<v-text-field
-							v-model="form.password"
+							v-model="password"
 							label="Password"
 							outlined
 							type="password"
+							:rules="passwordRules"
 							required
 						></v-text-field>
 					</v-col>
@@ -59,17 +61,31 @@ import axios from "axios";
 export default {
 	data() {
 		return {
-			form: {
-				username: "",
-				password: "",
-			},
+			username: "",
+			password: "",
+			valid: false,
+
+			usernameRules: [
+				(value) => {
+					if (value) return true;
+
+					return "Userame is requred.";
+				},
+			],
+			passwordRules: [
+				(value) => {
+					if (value) return true;
+
+					return "Password is requred.";
+				},
+			],
 		};
 	},
 	methods: {
 		async submitForm(e) {
 			const formData = {
-				username: this.form.username,
-				password: this.form.password,
+				username: this.username,
+				password: this.password,
 			};
 			axios
 				.post("/api/v1/token/login/", formData)

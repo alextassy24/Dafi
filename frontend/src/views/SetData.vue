@@ -1,7 +1,7 @@
 <template>
 	<div v-if="$store.state.isAuthenticated">
 		<h1 class="mt-10 mb-5 text-3xl text-center font-bold">Set data</h1>
-		<v-container class="mt-5">
+		<v-container class="mt-5 w-50">
 			<v-card class="mb-3 rounded-xl">
 				<v-card-text>
 					<h5 class="card-title mb-3">Coolant Temperature Settings</h5>

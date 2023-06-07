@@ -53,7 +53,7 @@
 						Page
 						<input
 							type="number"
-							v-model.number="goToPage"
+							v-model.number="pageInput"
 							min="1"
 							:max="totalPages"
 							class="w-12 text-center"
@@ -96,7 +96,7 @@ export default {
 				{ text: "Value", value: "value", key: "value" },
 			],
 			data: [],
-			goToPage: 1,
+			pageInput: 1,
 			totalItems: 0,
 			totalPages: 0,
 		};
@@ -126,13 +126,13 @@ export default {
 		previousPage() {
 			if (this.currentPage > 1) {
 				this.currentPage--;
-				this.goToPage = this.currentPage;
+				this.pageInput = this.currentPage;
 			}
 		},
 		nextPage() {
 			if (this.currentPage < this.totalPages) {
 				this.currentPage++;
-				this.goToPage = this.currentPage;
+				this.pageInput = this.currentPage;
 			}
 		},
 		formatTimestamp(timestamp) {
@@ -159,8 +159,8 @@ export default {
 			document.body.removeChild(link);
 		},
 		goToPage() {
-			if (this.goToPage >= 1 && this.goToPage <= this.totalPages) {
-				this.currentPage = this.goToPage;
+			if (this.pageInput >= 1 && this.pageInput <= this.totalPages) {
+				this.currentPage = this.pageInput;
 			}
 		},
 	},

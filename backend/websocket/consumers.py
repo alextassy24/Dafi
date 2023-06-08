@@ -36,6 +36,10 @@ class StateMachine():
         print(f'temperature:{self.temperature}\n pressure:{self.pressure}')
         
 class SendConsumer(AsyncWebsocketConsumer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.running_task = None
+        
     async def connect(self):
         await self.channel_layer.group_add("my_group", self.channel_name)
         await self.accept()
@@ -58,20 +62,23 @@ class SendConsumer(AsyncWebsocketConsumer):
             await self.send_data(self.action)
             
     async def send_data(self, action):
+        if self.running_task:
+            self.running_task.cancel()
+
         await asyncio.sleep(1)
         if action == 'start':
             machine.set_state('IDLE')
-            asyncio.create_task(self.generate_data(True))
+            self.running_task = asyncio.create_task(self.generate_data(True))
         elif action == 'stop':
             machine.set_state('System stopped')
             await self.process_data()
         elif action == 'cooling':
             machine.set_state('COOLING')
-            asyncio.create_task(self.generate_data(False))
+            self.running_task = asyncio.create_task(self.generate_data(False))
         elif action == 'heating':
             machine.set_state('HEATING')
-            asyncio.create_task(self.generate_data(True))
-
+            self.running_task = asyncio.create_task(self.generate_data(True))
+            
     async def generate_data(self, increasing):
         while machine.generating:
             await asyncio.sleep(1)
@@ -86,6 +93,7 @@ class SendConsumer(AsyncWebsocketConsumer):
         await self.send_values(machine)
         await self.save_temperature(machine.temperature)
         await self.save_pressure(machine.pressure)
+        
         
     async def send_values(self,machine):
         await self.send(json.dumps({

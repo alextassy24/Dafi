@@ -5,6 +5,7 @@
 			<v-card class="mb-5 rounded-lg">
 				<v-card-text>
 					<h2 class="text-bold text-base">System status</h2>
+					<h2 class="text-bold text-base">Iteration: {{ iteration }}</h2>
 					<h3 class="text-bold text-2xl text-center mb-5">
 						<span id="systemStatus" class="font-bold">{{ systemStatus }}</span>
 					</h3>
@@ -28,27 +29,38 @@
 					</div>
 				</v-card-text>
 			</v-card>
-
+			<Warning
+				title="Temperature"
+				:minValue="tempMinValue"
+				:maxValue="tempMaxValue"
+				:value="temperature"
+			/>
+			<Warning
+				title="Pressure"
+				:minValue="pressMinValue"
+				:maxValue="pressMaxValue"
+				:value="pressure"
+			/>
 			<div class="flex">
 				<Chart
 					class="m-1 w-100 rounded-lg"
-					:chart-id="'myChart1'"
-					title="temperature"
-					:min-value="tempMinValue"
-					:max-value="tempMaxValue"
+					:chartId="'myChart1'"
+					:title="'Temperature'"
+					:minValue="tempMinValue"
+					:maxValue="tempMaxValue"
 					:value="temperature"
-					:graph-data="tempGraphData"
-					color="rgba(73,198,230,1)"
+					:graphData="tempGraphData"
+					:color="'rgba(73,198,230,1)'"
 				/>
 				<Chart
 					class="m-1 w-100 rounded-lg"
-					:chart-id="'myChart2'"
-					title="pressure"
-					:min-value="pressMinValue"
-					:max-value="pressMaxValue"
+					:chartId="'myChart2'"
+					:title="'Pressure'"
+					:minValue="pressMinValue"
+					:maxValue="pressMaxValue"
 					:value="pressure"
-					:graph-data="presGraphData"
-					color="rgba(0,0,0,1)"
+					:graphData="presGraphData"
+					:color="'rgba(0,0,0,1)'"
 				/>
 			</div>
 
@@ -77,12 +89,14 @@ button[disabled] {
 <script>
 import Table from "../components/Table.vue";
 import Chart from "../components/Chart.vue";
+import Warning from "../components/Warning.vue";
 
 export default {
 	name: "ViewData",
 	components: {
 		Chart,
 		Table,
+		Warning,
 	},
 	data() {
 		return {
@@ -93,6 +107,7 @@ export default {
 			pressMinValue: 0,
 			tempMaxValue: 0,
 			tempMinValue: 0,
+			iteration: 0,
 
 			newTempGraphData: "",
 			newTempGraphLabels: "",
@@ -114,7 +129,25 @@ export default {
 						},
 					],
 				},
-				options: {},
+				options: {
+					responsive: true,
+					scales: {
+						x: {
+							display: true,
+							title: {
+								display: true,
+								text: "Time",
+							},
+						},
+						y: {
+							display: true,
+							title: {
+								display: true,
+								text: "Temperature",
+							},
+						},
+					},
+				},
 			},
 			presGraphData: {
 				type: "line",
@@ -129,7 +162,25 @@ export default {
 						},
 					],
 				},
-				options: {},
+				options: {
+					responsive: true,
+					scales: {
+						x: {
+							display: true,
+							title: {
+								display: true,
+								text: "Time",
+							},
+						},
+						y: {
+							display: true,
+							title: {
+								display: true,
+								text: "Pressure",
+							},
+						},
+					},
+				},
 			},
 			socket: null,
 		};
@@ -174,17 +225,18 @@ export default {
 		sendAction(action) {
 			this.socket.send(JSON.stringify({ action }));
 		},
+
 		handleMessage(event) {
 			const djangoData = JSON.parse(event.data);
 
 			// this.newTempGraphData.push(djangoData.temperature);
-			// this.newTempGraphLabels.push(djangoData.i);
+			// this.newTempGraphLabels.push(djangoData.iteration);
 			// this.tempGraphData.data.datasets[0].data = this.newTempGraphData;
 			// this.tempGraphData.data.labels = this.newTempGraphLabels;
 			// this.myTempChart.update();
 
 			// this.newPresGraphData.push(djangoData.pressure);
-			// this.newPresGraphLabels.push(djangoData.i);
+			// this.newPresGraphLabels.push(djangoData.iteration);
 			// this.presGraphData.data.datasets[0].data = this.newPresGraphData;
 			// this.presGraphData.data.labels = this.newPresGraphLabels;
 			// this.myPresChart.update();
@@ -196,6 +248,7 @@ export default {
 			this.pressMaxValue = djangoData.pressMaxValue;
 			this.temperature = djangoData.temperature;
 			this.pressure = djangoData.pressure;
+			this.iteration = djangoData.iteration;
 		},
 	},
 	beforeUnmount() {

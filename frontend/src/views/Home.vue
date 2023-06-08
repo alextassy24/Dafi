@@ -5,25 +5,69 @@
 	<h1 class="mt-10 mb-10 text-3xl text-center font-bold" v-else>Welcome, Guest</h1>
 	<div class="text-base text-justify my-10 mx-10 p-7 bg-gray-300 rounded-xl">
 		<p>
-			&emsp;This is a web application that allows users to register and login to their
-			account. The main functionality of the app is to display simulated data based on a
-			minimum and maximum value, which represents reactor coolant temperature . The app
-			generates temperature values within the specified range and displays them in a table
-			along with the timestamp of when they were added.
+			&emsp;This is a Realtime Data Logging and Visualization web application built using
+			Vue.js, Vuetify, Tailwind CSS, Chart.js, Django Rest Framework, Djoser, Django Channels,
+			Redis Server, Channel Redis, and SQLite3. The app allows users to register, log in, log
+			data, generate real-time data, and display the data using interactive charts built with
+			Chart.js.
 		</p>
+		<h2 class="text-xl font-bold mt-5">Technologies Used</h2>
+		<ul class="list-disc list-inside">
+			<li>Vue.js: A JavaScript framework for building user interfaces.</li>
+			<li>Vuetify: A Material Design component framework for Vue.js.</li>
+			<li>Tailwind CSS: A utility-first CSS framework for rapid UI development.</li>
+			<li>Chart.js: A JavaScript library for creating responsive and customizable charts.</li>
+			<li>
+				Django Rest Framework: A powerful and flexible toolkit for building Web APIs with
+				Django.
+			</li>
+			<li>
+				Djoser: A Django REST framework extension for user registration, authentication, and
+				password reset.
+			</li>
+			<li>
+				Django Channels: A Django extension for handling WebSockets and asynchronous tasks.
+			</li>
+			<li>
+				Redis Server: An in-memory data structure store used as a cache and message broker.
+			</li>
+			<li>Channel Redis: A Django Channels backend for using Redis as a channel layer.</li>
+			<li>SQLite3: A lightweight and serverless database engine.</li>
+		</ul>
+		<h2 class="text-xl font-bold mt-5">Functionalities</h2>
+		<ul class="list-disc list-inside">
+			<li>
+				Register: Users can register by providing their username, email, password, first
+				name, and last name.
+			</li>
+			<li>
+				Login: Registered users can log in using their credentials to access the app's
+				features.
+			</li>
+			<li>
+				Data Logging: Authenticated users can log data by providing relevant information.
+			</li>
+			<li>
+				Realtime Data Generation: The app generates real-time data for visualization
+				purposes.
+			</li>
+			<li>
+				Displaying Data in Realtime within Chart.js: The logged data is displayed in
+				real-time using interactive charts created with Chart.js. Users can view and analyze
+				the data dynamically.
+			</li>
+		</ul>
+		<h2 class="text-xl font-bold mt-5">Summary</h2>
 		<p>
-			&emsp;The app also displays the current temperature value and alerts the user if the
-			temperature is too low or too high, indicating if it's near the limit or if it's beyond
-			the limit.
-		</p>
-		<p>
-			&emsp;Furthermore, the app provides a download to CSV option that allows users to
-			download their data in CSV format.
-		</p>
-		<p>
-			&emsp;In summary, this app is a simple temperature monitoring system that allows users
-			to track and download their temperature data while providing real-time alerts when the
-			temperature is out of the specified range.
+			&emsp;This Realtime Data Logging and Visualization App is a web application that allows
+			users to register, log in, log data, generate real-time data, and display the data using
+			interactive charts. Users can register by providing their credentials and log in to
+			access the app's features. Authenticated users can log data by providing relevant
+			information, and the app generates real-time data for visualization. The logged data is
+			displayed in real-time using interactive charts created with Chart.js. Users can view
+			and analyze the data dynamically. The app is built using a combination of Vue.js,
+			Vuetify, Tailwind CSS, Chart.js, Django Rest Framework, Djoser, Django Channels, Redis
+			Server, Channel Redis, and SQLite3 technologies.
 		</p>
 	</div>
 </template>

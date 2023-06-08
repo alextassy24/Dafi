@@ -18,7 +18,6 @@
 
 <script>
 export default {
-	name: "Chart",
 	props: {
 		title: {
 			type: String,
@@ -51,18 +50,43 @@ export default {
 	},
 	mounted() {
 		const ctx = document.getElementById(this.chartId).getContext("2d");
-		this.graphData.data.datasets[0].backgroundColor = [this.color];
-		this.myChart = new Chart(ctx, this.graphData);
-	},
-	watch: {
-		graphData: {
-			handler(newData) {
-				this.chart.data = newData.data;
-				this.chart.options = newData.options;
-				this.chart.update();
+		const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+		gradient.addColorStop(0, this.color);
+		gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+
+		new Chart(ctx, {
+			type: "line",
+			data: this.graphData,
+			options: {
+				responsive: true,
+				scales: {
+					x: {
+						display: true,
+						title: {
+							display: true,
+							text: "Time",
+						},
+					},
+					y: {
+						display: true,
+						title: {
+							display: true,
+							text: this.title,
+						},
+						min: this.minValue,
+						max: this.maxValue,
+					},
+				},
+				elements: {
+					line: {
+						tension: 0,
+						backgroundColor: gradient,
+						borderColor: this.color,
+						borderWidth: 2,
+					},
+				},
 			},
-			deep: true,
-		},
+		});
 	},
 };
 </script>

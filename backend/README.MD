@@ -27,9 +27,7 @@ The Realtime Data Logging and Visualization App Backend is the server-side compo
 
     Note: Ensure that you have pipenv installed. If not, you can install it using pip:
 
-        ```shell
         pip install pipenv
-        ```
 
 5.  Activate the virtual environment:
 

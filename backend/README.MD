@@ -15,31 +15,45 @@ The Realtime Data Logging and Visualization App Backend is the server-side compo
 
 3.  Navigate to the backend directory:
 
+    ```shell
     cd backend
+    ```
 
 4.  Install the dependencies using pipenv:
 
+    ```shell
     pipenv install
+    ```
 
     Note: Ensure that you have pipenv installed. If not, you can install it using pip:
 
+        ```shell
         pip install pipenv
+        ```
 
 5.  Activate the virtual environment:
 
+    ```shell
     pipenv shell
+    ```
 
 6.  Apply the migrations:
 
+    ```shell
     python manage.py migrate
+    ```
 
 7.  (Optional) Load sample data (if available):
 
+    ```shell
     python manage.py loaddata <fixture_file>
+    ```
 
 8.  To start the backend server, run the following command:
 
+    ```shell
     python manage.py runserver
+    ```
 
 # Dependencies
 

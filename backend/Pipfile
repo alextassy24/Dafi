@@ -10,7 +10,6 @@ djangorestframework = "*"
 channels = {extras = ["daphne"], version = "*"}
 channels-redis = "*"
 django-jazzmin = "*"
-djangorestframework-simplejwt = "*"
 djoser = "*"
 
 [dev-packages]

@@ -43,7 +43,7 @@
 								v-model="pressMaxValue"
 								label="Maximum Value"
 								type="number"
-								placeholder="ex: 230"
+								placeholder="ex: 150"
 								outlined
 								required
 							></v-text-field>
@@ -69,7 +69,7 @@ export default {
 			tempMinValue: 200,
 			tempMaxValue: 350,
 			pressMinValue: 70,
-			pressMaxValue: 230,
+			pressMaxValue: 150,
 		};
 	},
 	methods: {

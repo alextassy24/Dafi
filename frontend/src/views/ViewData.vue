@@ -79,6 +79,7 @@ import Table from "../components/Table.vue";
 import Chart from "../components/Chart.vue";
 
 export default {
+	name: "ViewData",
 	components: {
 		Chart,
 		Table,
@@ -86,12 +87,12 @@ export default {
 	data() {
 		return {
 			systemStatus: "Initializing",
-			temperature: "",
-			pressure: "",
-			pressMaxValue: "",
-			pressMinValue: "",
-			tempMaxValue: "",
-			tempMinValue: "",
+			temperature: 0,
+			pressure: 0,
+			pressMaxValue: 0,
+			pressMinValue: 0,
+			tempMaxValue: 0,
+			tempMinValue: 0,
 
 			newTempGraphData: "",
 			newTempGraphLabels: "",

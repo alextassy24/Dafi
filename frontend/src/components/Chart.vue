@@ -25,15 +25,15 @@ export default {
 			required: true,
 		},
 		minValue: {
-			type: String,
+			type: Number,
 			required: true,
 		},
 		maxValue: {
-			type: String,
+			type: Number,
 			required: true,
 		},
 		value: {
-			type: String,
+			type: Number,
 			required: true,
 		},
 		chartId: {

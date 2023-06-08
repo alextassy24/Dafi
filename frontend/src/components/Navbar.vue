@@ -7,14 +7,14 @@
 					<v-btn class="mt-5 font-bold"> Set data </v-btn>
 				</router-link>
 
-				<router-link v-if="!$store.state.isAuthenticated" to="/login">
-					<v-btn class="mt-5 mr-5 bg-white font-bold"> Login </v-btn>
-				</router-link>
-
-				<router-link v-else="" to="/">
+				<router-link v-if="$store.state.isAuthenticated" to="/">
 					<v-btn class="mt-5 mr-5 text-white bg-red-600 font-bold" @click="logout">
 						Logout
 					</v-btn>
+				</router-link>
+
+				<router-link v-else="" to="/login">
+					<v-btn class="mt-5 mr-5 bg-white font-bold"> Login </v-btn>
 				</router-link>
 			</div>
 		</v-row>
